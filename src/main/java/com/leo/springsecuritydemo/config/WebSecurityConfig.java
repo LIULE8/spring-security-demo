@@ -1,5 +1,6 @@
 package com.leo.springsecuritydemo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,16 +19,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
         .authorizeRequests()
-        .antMatchers("/resources/**", "/signup", "/about").permitAll()
-        .antMatchers(HttpMethod.OPTIONS).permitAll()
-        .antMatchers(HttpMethod.POST, "/employees", "/orders").permitAll()
-        .antMatchers("/admin/**").hasRole("ADMIN")
-        .antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
-        .antMatchers("/hello").hasAuthority("ADD")
         .anyRequest().authenticated()
         .and()
         .formLogin()
         .and()
-        .httpBasic();
+        .httpBasic()
+        .and()
+        .logout()
+        .logoutUrl("/myLogout")
+        .logoutSuccessUrl("/myLogin")
+        .invalidateHttpSession(true)
+        .deleteCookies("cookieName1", "cookieName2");
   }
 }
